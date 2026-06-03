@@ -28,6 +28,7 @@ jobs:
           echo "Nand type: spim:2k+128"
           echo "nand_type=spim:2k+128" >> $GITHUB_ENV
           echo "suffix=_256m" >> $GITHUB_ENV
+          echo "release_note=(for 256MB flash)" >> $GITHUB_ENV
         else
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
@@ -106,7 +107,7 @@ jobs:
           - `nonmbm-yuzhii-fip-x60-new.bin`  
 
           <br>
-          `bl2` build parameters:
+          `bl2` build parameters: ${{ env.release_note }}
           - `NAND_TYPE=${{ env.nand_type }} DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40`
           - ubi: `UBI=1 OVERRIDE_UBI_START_ADDR=0x680000`
           - nonmbm: `NMBM=0`
