@@ -35,7 +35,6 @@ jobs:
     - name: Create release artifacts
       run: |
         echo "Creating release artifacts..."
-        cd ..
         ls -l outputs
         mkdir release
         tar -czf release/bl2fip-x30e-pro.tar.gz -C outputs .

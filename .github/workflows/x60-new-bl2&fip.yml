@@ -53,6 +53,7 @@ jobs:
 
     - name: Build bl2 for X60 New - NONMBM
       run: |
+        cd atf
         make clean && rm -rf build/* 
         make -f Makefile PLAT=mt7986 BOOT_DEVICE=spim-nand NAND_TYPE=${{ env.nand_type }} NMBM=0 \
         DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40 bl2
@@ -72,6 +73,7 @@ jobs:
 
     - name: Build fip for X60 New - NONMBM
       run: |
+        cd fip
         make clean && rm -rf output/*
         cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig uboot-mtk-20250711/configs-nonmbm/
 
@@ -82,7 +84,6 @@ jobs:
     - name: Create release artifacts
       run: |
         echo "Creating release artifacts..."
-        cd ..
         ls -l outputs
         mkdir release
         tar -czf release/bl2fip-x60-new${{ env.suffix }}.tar.gz -C outputs .
