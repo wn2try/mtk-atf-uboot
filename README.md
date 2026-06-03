@@ -1,4 +1,4 @@
-# Build MTK `bl2`&`u-boot` for Ruijie X30E Pro and X60 New
+# Build MTK `bl2`&`u-boot` for Ruijie X30E Pro and <br>Ruijie X60 New
 ATF source code: https://github.com/mtk-openwrt/arm-trusted-firmware  
 U-Boot source code: https://github.com/Yuzhii0718/bl-mt798x-dhcpd  
 
@@ -46,7 +46,7 @@ Install dependencies for Ubuntu 24.04
 ```bash
 sudo apt update
 sudo apt install -y gcc-aarch64-linux-gnu build-essential flex bison \
-libssl-dev device-tree-compiler qemu-user-static nodejs npm
+libssl-dev device-tree-compiler qemu-user-static nodejs 
 ```
 clone the source code
 ```bash
@@ -55,13 +55,16 @@ cd fip
 ```
 Apply the new config
 ```bash
-cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig uboot-mtk-20250711/configs-fit/
+cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig \
+uboot-mtk-20250711/configs-fit/
 ```
 Build `u-boot`
 ```bash
-make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
+make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD \
+MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
-The generated `fip` image will be located at `output/fip-mt7986_ruijie_rg-x60-new_SP2-Yuzhii-dhcpd-fit_md5-*.bin`.
+The generated `fip` image will be located at `output/`
+- `fip-mt7986_ruijie_rg-x60-new_SP2-Yuzhii-dhcpd-fit_md5-*.bin`
 
 <br>
 
@@ -93,14 +96,16 @@ cd uboot
 ```
 Apply the new config
 ```bash
-cp ../uboot-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro_defconfig uboot-mtk-20250711/configs-nonmbm/
+cp ../uboot-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro_defconfig \
+uboot-mtk-20250711/configs-nonmbm/
 ```
 Build `u-boot`
 ```bash
-make BOARD=ruijie_rg-x30e-pro VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
+make BOARD=ruijie_rg-x30e-pro VERSION=SP2 VARIANT=NONMBM \
+MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
-The generated `bl2` and `fip` image will be located at 
-- `output/bl2-mt7981_ruijie_rg-x30e-pro_SP2-nonmbm_md5-*.img`
-- `output/fip-mt7981_ruijie_rg-x30e-pro_SP2-Yuzhii-dhcpd-nonmbm_md5-*.bin`
+The generated `bl2` and `fip` image will be located at `output/`
+- `bl2-mt7981_ruijie_rg-x30e-pro_SP2-nonmbm_md5-*.img`
+- `fip-mt7981_ruijie_rg-x30e-pro_SP2-Yuzhii-dhcpd-nonmbm_md5-*.bin`
 
 <br><br>
