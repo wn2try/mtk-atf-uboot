@@ -21,11 +21,11 @@ jobs:
       run: |
         echo "Flash size input: ${{ inputs.flash_size }}MB"
         if [ ${{ inputs.flash_size }} -eq 128 ]; then
-          echo "Flash size: 128MB"
+          echo "Nand type: spim:2k+64"
           echo "nand_type=spim:2k+64" >> $GITHUB_ENV
           echo "suffix=" >> $GITHUB_ENV
         elif [ ${{ inputs.flash_size }} -eq 256 ]; then
-          echo "Flash size: 256MB"
+          echo "Nand type: spim:2k+128"
           echo "nand_type=spim:2k+128" >> $GITHUB_ENV
           echo "suffix=_256m" >> $GITHUB_ENV
         else

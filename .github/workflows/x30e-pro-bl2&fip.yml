@@ -15,8 +15,8 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y gcc-aarch64-linux-gnu build-essential flex bison \
-        libssl-dev device-tree-compiler qemu-user-static nodejs npm
+        sudo apt install -y gcc-aarch64-linux-gnu build-essential \
+        device-tree-compiler nodejs
 
         mkdir outputs
 
