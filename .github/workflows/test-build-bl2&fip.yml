@@ -1,4 +1,4 @@
-name: Test Build of BL2 & FIP for X60 New (UBI)
+name: Test Build of BL2 & FIP for X60 New
 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -17,14 +17,8 @@ jobs:
     - name: Checkout this repository
       uses: actions/checkout@v6
 
-    - name: Install dependencies
+    - name: Create env variables based on flash size input
       run: |
-        sudo apt update
-        sudo apt install -y gcc-aarch64-linux-gnu build-essential flex bison \
-        libssl-dev device-tree-compiler qemu-user-static nodejs npm
-
-        mkdir release
-
         if ${{ inputs.flash_size }} -eq 128; then
           echo "Flash size: 128MB"
           echo "nand_type=spim:2k+64" >> $GITHUB_ENV
@@ -37,6 +31,14 @@ jobs:
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
         fi
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y gcc-aarch64-linux-gnu build-essential \
+        device-tree-compiler nodejs
+
+        mkdir release
 
     - name: Build bl2 for X60 New - UBI
       run: |
