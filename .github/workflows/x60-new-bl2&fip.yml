@@ -6,7 +6,7 @@ on:
     inputs: 
       flash_size:
         description: Flash size in megabytes (MB)
-        default: 128
+        default: "128"
         required: true
 
 jobs:
@@ -19,11 +19,12 @@ jobs:
 
     - name: Create env variables based on flash size input
       run: |
-        if ${{ inputs.flash_size }} -eq 128; then
+        echo "Flash size input: ${{ inputs.flash_size }}MB"
+        if [ ${{ inputs.flash_size }} -eq 128 ]; then
           echo "Flash size: 128MB"
           echo "nand_type=spim:2k+64" >> $GITHUB_ENV
           echo "suffix=" >> $GITHUB_ENV
-        elif ${{ inputs.flash_size }} -eq 256; then
+        elif [ ${{ inputs.flash_size }} -eq 256 ]; then
           echo "Flash size: 256MB"
           echo "nand_type=spim:2k+128" >> $GITHUB_ENV
           echo "suffix=_256m" >> $GITHUB_ENV
