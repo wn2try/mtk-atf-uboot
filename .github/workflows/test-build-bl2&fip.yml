@@ -17,69 +17,59 @@ jobs:
     - name: Checkout this repository
       uses: actions/checkout@v6
 
-    - name: Create env variables based on flash size input
+    - name: Create env variables 
       run: |
+        echo "Create env variables based on flash size input..."
         echo "Flash size input: ${{ inputs.flash_size }}MB"
         if [ ${{ inputs.flash_size }} -eq 128 ]; then
-          echo "Nand type: spim:2k+64"
-          echo "nand_type=spim:2k+64" >> $GITHUB_ENV
-          echo "suffix=" >> $GITHUB_ENV
+          echo "nand type: spim:2k+64"
+          echo "suffix=" | tee -a $GITHUB_ENV
         elif [ ${{ inputs.flash_size }} -eq 256 ]; then
-          echo "Nand type: spim:2k+128"
-          echo "nand_type=spim:2k+128" >> $GITHUB_ENV
-          echo "suffix=_256m" >> $GITHUB_ENV
+          echo "nand type: spim:2k+128" 
+          echo "suffix=_256m" | tee -a $GITHUB_ENV
+          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-x60-new_defconfig
         else
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
         fi
 
+        echo "Setting source code versions..."
+        echo "uboot_ver=uboot-mtk-20250711" | tee -a $GITHUB_ENV
+        echo "atf_ver=atf-20260123" | tee -a $GITHUB_ENV
+
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y gcc-aarch64-linux-gnu build-essential \
-        device-tree-compiler nodejs
+        sudo apt install -y gcc-aarch64-linux-gnu build-essential device-tree-compiler nodejs
 
-        mkdir release
+        mkdir outputs
 
-    - name: Build bl2 for X60 New - UBI
+    - name: Build bl2 & fip for X60 New - UBI
       run: |
-        git clone -b mtksoc --depth 1 https://github.com/mtk-openwrt/arm-trusted-firmware.git atf
-
-        cd atf
-        make -f Makefile PLAT=mt7986 BOOT_DEVICE=spim-nand NAND_TYPE=${{ env.nand_type }} UBI=1 \
-        OVERRIDE_UBI_START_ADDR=0x680000 DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40 bl2
-
-        cp build/mt7986/release/bl2.img ../release/ubi-mtk-bl2-x60-new${{ env.suffix }}.img
-
-    - name: Build bl2 for X60 New - NONMBM
-      run: |
-        cd atf
-        make clean && rm -rf build/* 
-        make -f Makefile PLAT=mt7986 BOOT_DEVICE=spim-nand NAND_TYPE=${{ env.nand_type }} NMBM=0 \
-        DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40 bl2
-
-        cp build/mt7986/release/bl2.img ../release/nonmbm-mtk-bl2-x60-new${{ env.suffix }}.img
-
-    - name: Build fip for X60 New - UBI
-      run: |
+        echo "Building bl2 & fip for UBI variant..."
         git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git fip
 
         cd fip
-        cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig uboot-mtk-20250711/configs-fit/
+        cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-fit/
+        cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-fit/
 
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../release/ubi-yuzhii-fip-x60-new.bin
+        cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-fip-x60-new.bin
+        cp output/bl2-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-bl2-x60-new${{ env.suffix }}.bin
 
-    - name: Build fip for X60 New - NONMBM
+    - name: Build bl2 & fip for X60 New - NONMBM
       run: |
+        echo "Building bl2 & fip for NONMBM variant..."
         cd fip
         make clean && rm -rf output/*
-        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig uboot-mtk-20250711/configs-nonmbm/
+        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
+        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-nonmbm/
 
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../release/nonmbm-yuzhii-fip-x60-new.bin
+        cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-x60-new.bin
+        cp output/bl2-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.bin
 
     - name: Upload bl2 and fip image
       uses: actions/upload-artifact@v7
@@ -87,4 +77,4 @@ jobs:
         name: bl2fip-x60-new${{ env.suffix }}
         overwrite: true
         retention-days: 3
-        path: release/*
+        path: outputs/*
