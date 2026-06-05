@@ -96,16 +96,18 @@ jobs:
           - `nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.img`  
           - `nonmbm-yuzhii-fip-x60-new.bin`  
 
-          <br>
-          `bl2` build parameters: ${{ env.release_note }}
-          - `NAND_TYPE=${{ env.nand_type }} DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40`
-          - ubi: `UBI=1 OVERRIDE_UBI_START_ADDR=0x680000`
-          - nonmbm: `NMBM=0`
+          <br>  
 
-          `fip` build parameters:
-          - `VERSION=SP2 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`
-          - ubi: `VARIANT=UBOOTMOD`
-          - nonmbm: `VARIANT=NONMBM`
+          `bl2` build parameters: ${{ env.release_note }}  
+          - `NAND_TYPE=${{ env.nand_type }} DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40`  
+          - ubi: `UBI=1 OVERRIDE_UBI_START_ADDR=0x680000`  
+          - nonmbm: `NMBM=0`  
 
-          <br>
+          `fip` build parameters:  
+          - `VERSION=SP2 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`  
+          - ubi: `VARIANT=UBOOTMOD`  
+          - nonmbm: `VARIANT=NONMBM`  
+
+          <br>  
+          
           `bl2` & `fip` source code (yuzhii): https://github.com/Yuzhii0718/bl-mt798x-dhcpd  

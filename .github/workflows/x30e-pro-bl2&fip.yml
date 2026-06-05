@@ -52,9 +52,11 @@ jobs:
           - `nonmbm-yuzhii-bl2-x30e-pro.img`  
           - `nonmbm-yuzhii-fip-x30e-pro.bin`  
 
-          <br>
-          Build parameters:
-          - `VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`
+          <br>  
 
-          <br>
+          Build parameters:  
+          - `VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`  
+
+          <br>  
+
           `bl2` & `fip` source code (yuzhii): https://github.com/Yuzhii0718/bl-mt798x-dhcpd  
