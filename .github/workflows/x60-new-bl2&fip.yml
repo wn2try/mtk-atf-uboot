@@ -25,7 +25,7 @@ jobs:
           echo "nand type: spim:2k+64"
           echo "suffix=" | tee -a $GITHUB_ENV
         elif [ ${{ inputs.flash_size }} -eq 256 ]; then
-          echo "nand type: spim:2k+128" 
+          echo "nand_type=spim:2k+128" | tee -a $GITHUB_ENV
           echo "suffix=_256m" | tee -a $GITHUB_ENV
           echo "release_note=(for 256MB flash)" | tee -a $GITHUB_ENV
           sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-x60-new_defconfig
