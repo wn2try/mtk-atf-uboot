@@ -37,6 +37,7 @@ jobs:
         echo "Setting source code versions..."
         echo "uboot_ver=uboot-mtk-20250711" | tee -a $GITHUB_ENV
         echo "atf_ver=atf-20260123" | tee -a $GITHUB_ENV
+        echo "ver_tag=（github/wn2try）" | tee -a $GITHUB_ENV
 
     - name: Install dependencies
       run: |
@@ -54,8 +55,8 @@ jobs:
         cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-fit/
         cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-fit/
 
-        export BUILD_STRING=" (github/wn2try)"
-        export LOCALVERSION=" (github/wn2try)"
+        export BUILD_STRING="$ver_tag"
+        export LOCALVERSION="$ver_tag"
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-fip-x60-new.bin
@@ -69,8 +70,8 @@ jobs:
         cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
         cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-nonmbm/
 
-        export BUILD_STRING=" (github/wn2try)"
-        export LOCALVERSION=" (github/wn2try)"
+        export BUILD_STRING="$ver_tag"
+        export LOCALVERSION="$ver_tag"
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-x60-new.bin
