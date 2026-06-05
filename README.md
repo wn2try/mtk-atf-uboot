@@ -65,7 +65,7 @@ Parameter explanation:
 | `_LOG_LEVEL_INFO=y` /  <br>`LOG_LEVEL=40`                                                                           | `30` /  <br>`_LOG_LEVEL_WARNING=y`                   | Warning (`=30`), Info (`=40`)                                       |
 
 > [[Tutorial] Build, customize and use MediaTek open-source U-Boot and ATF](https://forum.openwrt.org/t/tutorial-build-customize-and-use-mediatek-open-source-u-boot-and-atf/134897)  
-> https://github.com/Yuzhii0718/bl-mt798x-dhcpd/blob/master/atf-20260123/plat/mediatek/apsoc_common/Config.in
+> [MediaTek ATF Configuration](https://github.com/mtk-openwrt/arm-trusted-firmware/blob/mtksoc/plat/mediatek/apsoc_common/Config.in)
 
 <br>
 

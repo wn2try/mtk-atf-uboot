@@ -26,6 +26,8 @@ jobs:
         cd fip
         cp ../uboot-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro_defconfig uboot-mtk-20250711/configs-nonmbm/
 
+        export BUILD_STRING=" (github/wn2try)"
+        export LOCALVERSION=" (github/wn2try)"
         make BOARD=ruijie_rg-x30e-pro VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/bl2-mt7981_ruijie_rg-x30e-pro*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-x30e-pro.img
