@@ -56,7 +56,7 @@ jobs:
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-fip-x60-new.bin
-        cp output/bl2-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-bl2-x60-new${{ env.suffix }}.bin
+        cp output/bl2-mt7986_ruijie_rg-x60-new*fit*.img ../outputs/ubi-yuzhii-bl2-x60-new${{ env.suffix }}.img
 
     - name: Build bl2 & fip for X60 New - NONMBM
       run: |
@@ -69,7 +69,7 @@ jobs:
         make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-x60-new.bin
-        cp output/bl2-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.bin
+        cp output/bl2-mt7986_ruijie_rg-x60-new*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.img
 
     - name: Upload bl2 and fip image
       uses: actions/upload-artifact@v7
