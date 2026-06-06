@@ -15,8 +15,11 @@ libssl-dev device-tree-compiler qemu-user-static nodejs
 ```
 Clone the source code  
 ```bash
-git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git uboot
-cd uboot
+git clone --depth 1 https://github.com/wn2try/mtk-atf-uboot.git 
+cd mtk-atf-uboot
+
+git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git 
+cd bl-mt798x-dhcpd
 ```
 Apply the new config  
 ```bash
@@ -27,6 +30,8 @@ atf-20260123/configs-fit/
 ```
 Build `u-boot` & `bl2`  
 ```bash
+# export BUILD_STRING="xxx"
+# export LOCALVERSION="yyy"
 make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD \
 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
@@ -34,6 +39,9 @@ The generated `bl2` and `fip` image will be located at `output/`
 - `bl2-mt7986_ruijie_rg-x60-new_SP2-fit_md5-*.img`
 - `fip-mt7986_ruijie_rg-x60-new_SP2-Yuzhii-dhcpd-fit_md5-*.bin`
 > bl2.img = MTK bootrom header + bl2.bin + sha256 hash  
+> These two env variables can be used to modify the default version tag:  
+> - `BUILD_STRING` for `bl2` & `bl31`  
+> - `LOCALVERSION` for `u-boot`  
 
 <br>
 
@@ -78,8 +86,11 @@ libssl-dev device-tree-compiler qemu-user-static nodejs
 ```
 Clone the source code  
 ```bash
-git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git uboot
-cd uboot
+git clone --depth 1 https://github.com/wn2try/mtk-atf-uboot.git 
+cd mtk-atf-uboot
+
+git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git 
+cd bl-mt798x-dhcpd
 ```
 Apply the new config  
 ```bash
