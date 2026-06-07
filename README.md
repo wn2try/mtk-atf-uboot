@@ -23,21 +23,21 @@ cd bl-mt798x-dhcpd
 ```
 Apply the new config  
 ```bash
-cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig \
-uboot-mtk-20250711/configs-fit/
-cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig \
+cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig \
 atf-20260123/configs-fit/
+cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig \
+uboot-mtk-20250711/configs-fit/
 ```
 Build `u-boot` & `bl2`  
 ```bash
 # export BUILD_STRING="xxx"
 # export LOCALVERSION="yyy"
-make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD \
+make BOARD=ruijie_rg-x60-new-ubi VERSION=SP2 VARIANT=UBOOTMOD \
 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
 The generated `bl2` and `fip` image will be located at `output/`  
-- `bl2-mt7986_ruijie_rg-x60-new_SP2-fit_md5-*.img`
-- `fip-mt7986_ruijie_rg-x60-new_SP2-Yuzhii-dhcpd-fit_md5-*.bin`
+- `bl2-mt7986_ruijie_rg-x60-new-ubi_SP2-fit_md5-*.img`
+- `fip-mt7986_ruijie_rg-x60-new-ubi_SP2-Yuzhii-dhcpd-fit_md5-*.bin`
 > bl2.img = MTK bootrom header + bl2.bin + sha256 hash  
 > These two env variables can be used to modify the default version tag:  
 > - `BUILD_STRING` for `bl2` & `bl31`  
@@ -94,16 +94,18 @@ cd bl-mt798x-dhcpd
 ```
 Apply the new config  
 ```bash
-cp ../uboot-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro_defconfig \
+cp ../atf-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro-max_defconfig \
+atf-20260123/configs-nonmbm/
+cp ../uboot-mtk/configs-nonmbm/mt7981_ruijie_rg-x30e-pro-max_defconfig \
 uboot-mtk-20250711/configs-nonmbm/
 ```
 Build `u-boot` & `bl2`  
 ```bash
-make BOARD=ruijie_rg-x30e-pro VERSION=SP2 VARIANT=NONMBM \
+make BOARD=ruijie_rg-x30e-pro-max VERSION=SP2 VARIANT=NONMBM \
 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
 The generated `bl2` and `fip` image will be located at `output/`  
-- `bl2-mt7981_ruijie_rg-x30e-pro_SP2-nonmbm_md5-*.img`
-- `fip-mt7981_ruijie_rg-x30e-pro_SP2-Yuzhii-dhcpd-nonmbm_md5-*.bin`
+- `bl2-mt7981_ruijie_rg-x30e-pro-max_SP2-nonmbm_md5-*.img`
+- `fip-mt7981_ruijie_rg-x30e-pro-max_SP2-Yuzhii-dhcpd-nonmbm_md5-*.bin`
 
 <br><br>

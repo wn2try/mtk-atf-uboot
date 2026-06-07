@@ -28,7 +28,8 @@ jobs:
           echo "nand_type=spim:2k+128" | tee -a $GITHUB_ENV
           echo "suffix=_256m" | tee -a $GITHUB_ENV
           echo "release_note=(for 256MB flash)" | tee -a $GITHUB_ENV
-          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-x60-new_defconfig
+          echo "vertag_256m= 256MB Flash" | tee -a $GITHUB_ENV
+          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-x60-new*_defconfig
         else
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
@@ -37,7 +38,6 @@ jobs:
         echo "Setting source code versions..."
         echo "uboot_ver=uboot-mtk-20250711" | tee -a $GITHUB_ENV
         echo "atf_ver=atf-20260123" | tee -a $GITHUB_ENV
-        echo "ver_tag=（github/wn2try）" | tee -a $GITHUB_ENV
 
     - name: Install dependencies
       run: |
@@ -52,12 +52,13 @@ jobs:
         git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git fip
 
         cd fip
-        cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-fit/
-        cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-fit/
+        cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig ${{ env.uboot_ver }}/configs-fit/
+        cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig ${{ env.atf_ver }}/configs-fit/
 
-        export BUILD_STRING="$ver_tag"
-        export LOCALVERSION="$ver_tag"
-        make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
+        if [ ! -z "$vertag_256m" ]; then
+          export BUILD_STRING="$vertag_256m"
+        fi
+        make BOARD=ruijie_rg-x60-new-ubi VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-fip-x60-new.bin
         cp output/bl2-mt7986_ruijie_rg-x60-new*fit*.img ../outputs/ubi-yuzhii-bl2-x60-new${{ env.suffix }}.img
@@ -67,12 +68,13 @@ jobs:
         echo "Building bl2 & fip for NONMBM variant..."
         cd fip
         make clean && rm -rf output/*
-        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
-        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new_defconfig ${{ env.atf_ver }}/configs-nonmbm/
+        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new-max_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
+        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new-max_defconfig ${{ env.atf_ver }}/configs-nonmbm/
 
-        export BUILD_STRING="$ver_tag"
-        export LOCALVERSION="$ver_tag"
-        make BOARD=ruijie_rg-x60-new VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
+        if [ ! -z "$vertag_256m" ]; then
+          export BUILD_STRING="$vertag_256m"
+        fi
+        make BOARD=ruijie_rg-x60-new-max VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
         cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-x60-new.bin
         cp output/bl2-mt7986_ruijie_rg-x60-new*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.img
@@ -112,6 +114,10 @@ jobs:
           - `VERSION=SP2 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`  
           - ubi: `VARIANT=UBOOTMOD`  
           - nonmbm: `VARIANT=NONMBM`  
+
+          <br>
+
+          mtd `ubi` size: maximum of rest of the flash
 
           <br>  
           
