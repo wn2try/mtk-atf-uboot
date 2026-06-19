@@ -116,5 +116,5 @@ CONFIG_MTK_BOOTMENU_UBI=y
 CONFIG_MTK_DEFAULT_FIT_BOOT_CONF="config-1"
 CONFIG_MTK_UBI_RESERVED_VOLUMES=""
 CONFIG_MTK_WGET=y
-CONFIG_USE_PREBOOT=y
 CONFIG_PREBOOT="mtd read product_info 0x40080000 0x0 0x800 && env import -d -t 0x4008002c 0x19 ethaddr ; setenv glbtn_key mesh,reset ; setenv preboot ; saveenv"
+CONFIG_USE_PREBOOT=y
