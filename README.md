@@ -6,7 +6,7 @@ Source code: https://github.com/Yuzhii0718/bl-mt798x-dhcpd
 
 <br>
 
-## X60 New - UBI Layout  
+## UBI Variant  
 Install dependencies for Ubuntu 24.04  
 ```bash
 sudo apt update
@@ -23,22 +23,23 @@ cd bl-mt798x-dhcpd
 ```
 Apply the new config  
 ```bash
-cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig \
-atf-20260123/configs-fit/
-cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig \
-uboot-mtk-20250711/configs-fit/
+cp ../atf-mtk/configs-ubi/mt7986_ruijie_rg-x60-new-ubi_defconfig \
+atf-20260123/configs-ubi/
+cp ../uboot-mtk/configs-ubi/mt7986_ruijie_rg-x60-new-ubi_defconfig \
+uboot-mtk-20250711/configs-ubi/
 ```
 Build `u-boot` & `bl2`  
 ```bash
 # export BUILD_STRING="xxx"
 # export LOCALVERSION="yyy"
-make BOARD=ruijie_rg-x60-new-ubi VERSION=SP2 VARIANT=UBOOTMOD \
+make BOARD=ruijie_rg-x60-new-ubi VERSION=SP2 VARIANT=UBI \
 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1 
 ```
 The generated `bl2` and `fip` image will be located at `output/`  
-- `bl2-mt7986_ruijie_rg-x60-new-ubi_SP2-fit_md5-*.img`
-- `fip-mt7986_ruijie_rg-x60-new-ubi_SP2-Yuzhii-dhcpd-fit_md5-*.bin`
+- `bl2-mt7986_ruijie_rg-x60-new-ubi_SP2-ubi_md5-*.img`
+- `fip-mt7986_ruijie_rg-x60-new-ubi_SP2-Yuzhii-dhcpd-ubi_md5-*.bin`
 > bl2.img = MTK bootrom header + bl2.bin + sha256 hash  
+> fip = bl31 + u-boot  
 > These two env variables can be used to modify the default version tag:  
 > - `BUILD_STRING` for `bl2` & `bl31`  
 > - `LOCALVERSION` for `u-boot`  
@@ -47,13 +48,14 @@ The generated `bl2` and `fip` image will be located at `output/`
 
 Parameter explanation:  
 
-| Parameter        | Value      | Default   | Description                                                                                                                                                                                                                                                                                               |
-| :--------------- | :--------- | :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VERSION`        | `SP2`      | `2025`    | `2025`: ATF-20250711, UBOOT-20250711 <br>`SP2` &nbsp;: ATF-20260123, UBOOT-20250711                                                                                                                                                                                                                       |
-| `VARIANT`        | `UBOOTMOD` | `default` | `default`: MTK-NMBM enabled <br>`nonmbm`: MTK-NMBM disabled <br>`ubootmod`:  <br>&nbsp;&nbsp;&nbsp;&nbsp;- u-boot env in UBI volume `ubootenv`&`ubootenv2`<br>&nbsp;&nbsp;&nbsp;&nbsp;- reserved UBI volumes: `factory=2M` by default<br>&nbsp;&nbsp;&nbsp;&nbsp;- `fip` in UBI volume for `bl2`(`UBI=1`) |
-| `MULTI_LAYOUT`   | `0`        | `1`       | Multiple mtd layout for selection in Web failsafe (`=1`)                                                                                                                                                                                                                                                  |
-| `FIXED_MTDPARTS` | `0`        | `1`       | Make `mtdparts` editable (`=0`)<br>Default to `1` for `MULTI_LAYOUT=1`                                                                                                                                                                                                                                    |
-| `UBIMNG`         | `1`        | `0`       | Enable UBI volume management in the Web failsafe (`=1`).                                                                                                                                                                                                                                                  |
+| Parameter        | Value | Default   | Description                                                                                                                                                                                                                                                                                                     |
+| :--------------- | :---- | :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VERSION`        | `SP2` | `2025`    | `2025`: ATF-20250711, UBOOT-20250711 <br>`SP2` &nbsp;: ATF-20260123, UBOOT-20250711                                                                                                                                                                                                                             |
+| `VARIANT`        | `UBI` | `default` | `default`: MTK-NMBM enabled <br>`nonmbm`: MTK-NMBM disabled <br>`ubi`/`ubootmod`:  <br>&nbsp;&nbsp;&nbsp;&nbsp;- u-boot env in UBI volume `ubootenv`&`ubootenv2`<br>&nbsp;&nbsp;&nbsp;&nbsp;- reserved UBI volumes: `factory=2M` by default<br>&nbsp;&nbsp;&nbsp;&nbsp;- `fip` in UBI volume for `bl2`(`UBI=1`) |
+| `MULTI_LAYOUT`   | `0`   | `1`       | Multiple mtd layout for selection in Web failsafe (`=1`)                                                                                                                                                                                                                                                        |
+| `FIXED_MTDPARTS` | `0`   | `1`       | Make `mtdparts` editable (`=0`)<br>Default to `1` for `MULTI_LAYOUT=1`                                                                                                                                                                                                                                          |
+| `UBIMNG`         | `1`   | `0`       | Enable UBI volume management in the Web failsafe (`=1`).                                                                                                                                                                                                                                                        |
+
 
 > https://github.com/Yuzhii0718/bl-mt798x-dhcpd/blob/master/README.md
 
@@ -77,7 +79,7 @@ Parameter explanation:
 
 <br>
 
-## X30E Pro - Build NONMBM Variant  
+## NONMBM Variant  
 Install dependencies for Ubuntu 24.04  
 ```bash
 sudo apt update

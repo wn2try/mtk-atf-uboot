@@ -1,4 +1,4 @@
-name: X60 New - Build BL2 & FIP
+name: Build BL2 & FIP - X60 New / X30E Pro
 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -7,6 +7,10 @@ on:
       flash_size:
         description: Flash size in megabytes (MB)
         default: "128"
+        required: true
+      model:
+        description: Device model (x60-new / x30e-pro)
+        default: "x60-new"
         required: true
 
 jobs:
@@ -29,11 +33,15 @@ jobs:
           echo "suffix=_256m" | tee -a $GITHUB_ENV
           echo "release_note=(for 256MB flash)" | tee -a $GITHUB_ENV
           echo "vertag_256m= 256MB Flash" | tee -a $GITHUB_ENV
-          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-x60-new*_defconfig
+          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-${{inputs.model}}*_defconfig
         else
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
         fi
+
+        cfg=atf-mtk/configs-ubi/*-${{inputs.model}}-ubi_defconfig
+        ubiaddr=$(grep "^OVERRIDE_UBI_START_ADDR" ${cfg} | cut -d'=' -f2)
+        echo "ubi_addr=$ubiaddr" | tee -a $GITHUB_ENV
 
         echo "Setting source code versions..."
         echo "uboot_ver=uboot-mtk-20250711" | tee -a $GITHUB_ENV
@@ -41,52 +49,52 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install -y gcc-aarch64-linux-gnu build-essential device-tree-compiler nodejs
+        sudo -yq apt-get update
+        sudo -yq apt-get install gcc-aarch64-linux-gnu build-essential device-tree-compiler nodejs
 
         mkdir outputs
 
-    - name: Build bl2 & fip for X60 New - UBI
+    - name: Build bl2 & fip - UBI
       run: |
         echo "Building bl2 & fip for UBI variant..."
         git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git fip
 
         cd fip
-        cp ../uboot-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig ${{ env.uboot_ver }}/configs-fit/
-        cp ../atf-mtk/configs-fit/mt7986_ruijie_rg-x60-new-ubi_defconfig ${{ env.atf_ver }}/configs-fit/
+        cp ../uboot-mtk/configs-ubi/mt7986_ruijie_rg-${{inputs.model}}-ubi_defconfig ${{ env.uboot_ver }}/configs-ubi/
+        cp ../atf-mtk/configs-ubi/mt7986_ruijie_rg-${{inputs.model}}-ubi_defconfig ${{ env.atf_ver }}/configs-ubi/
 
         if [ ! -z "$vertag_256m" ]; then
           export BUILD_STRING="$vertag_256m"
         fi
-        make BOARD=ruijie_rg-x60-new-ubi VERSION=SP2 VARIANT=UBOOTMOD MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
+        make BOARD=ruijie_rg-${{inputs.model}}-ubi VERSION=SP2 VARIANT=UBI MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-x60-new*fit*.bin ../outputs/ubi-yuzhii-fip-x60-new.bin
-        cp output/bl2-mt7986_ruijie_rg-x60-new*fit*.img ../outputs/ubi-yuzhii-bl2-x60-new${{ env.suffix }}.img
+        cp output/fip-mt7986_ruijie_rg-${{inputs.model}}*ubi*.bin ../outputs/ubi-yuzhii-fip-${{inputs.model}}.bin
+        cp output/bl2-mt7986_ruijie_rg-${{inputs.model}}*ubi*.img ../outputs/ubi-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
 
-    - name: Build bl2 & fip for X60 New - NONMBM
+    - name: Build bl2 & fip - NONMBM
       run: |
         echo "Building bl2 & fip for NONMBM variant..."
         cd fip
         make clean && rm -rf output/*
-        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new-max_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
-        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-x60-new-max_defconfig ${{ env.atf_ver }}/configs-nonmbm/
+        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-${{inputs.model}}-max_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
+        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-${{inputs.model}}-max_defconfig ${{ env.atf_ver }}/configs-nonmbm/
 
         if [ ! -z "$vertag_256m" ]; then
           export BUILD_STRING="$vertag_256m"
         fi
-        make BOARD=ruijie_rg-x60-new-max VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
+        make BOARD=ruijie_rg-${{inputs.model}}-max VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-x60-new*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-x60-new.bin
-        cp output/bl2-mt7986_ruijie_rg-x60-new*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.img
+        cp output/fip-mt7986_ruijie_rg-${{inputs.model}}*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-${{inputs.model}}.bin
+        cp output/bl2-mt7986_ruijie_rg-${{inputs.model}}*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
 
     - name: Create release artifacts
       run: |
         echo "Creating release artifacts..."
         ls -l outputs
         mkdir release
-        tar -czf release/bl2fip-x60-new${{ env.suffix }}.tar.gz -C outputs .
+        tar -czf release/bl2fip-${{inputs.model}}${{ env.suffix }}.tar.gz -C outputs .
 
-        releasetag=$(date +"%Y%m%dT%H%M")
+        releasetag=$(date +"%Y%m%dT%H%M")_${{inputs.model}}
         echo "release_tag=$releasetag" >> $GITHUB_ENV
 
     - name: Release artifacts
@@ -98,26 +106,26 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
           `bl2` and `fip` images for X60 New:  
-          - `ubi-yuzhii-bl2-x60-new${{ env.suffix }}.img`  
-          - `ubi-yuzhii-fip-x60-new.bin`  
-          - `nonmbm-yuzhii-bl2-x60-new${{ env.suffix }}.img`  
-          - `nonmbm-yuzhii-fip-x60-new.bin`  
+          - `ubi-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img`  
+          - `ubi-yuzhii-fip-${{inputs.model}}.bin`  
+          - `nonmbm-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img`  
+          - `nonmbm-yuzhii-fip-${{inputs.model}}.bin`  
 
           <br>  
 
           `bl2` build parameters: ${{ env.release_note }}  
           - `NAND_TYPE=${{ env.nand_type }} DRAM_USE_DDR4=0 DUAL_FIP=0 LOG_LEVEL=40`  
-          - ubi: `UBI=1 OVERRIDE_UBI_START_ADDR=0x680000`  
+          - ubi: `UBI=1 OVERRIDE_UBI_START_ADDR=${{ env.ubi_addr }}`  
           - nonmbm: `NMBM=0`  
 
           `fip` build parameters:  
           - `VERSION=SP2 MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1`  
-          - ubi: `VARIANT=UBOOTMOD`  
+          - ubi: `VARIANT=UBI`  
           - nonmbm: `VARIANT=NONMBM`  
 
           <br>
 
-          mtd `ubi` size: maximum of rest of the flash
+          mtd `ubi` size: rest of the flash
 
           <br>  
           
