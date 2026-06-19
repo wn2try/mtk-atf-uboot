@@ -105,7 +105,7 @@ jobs:
         artifacts: ./release/*
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
-          `bl2` and `fip` images for X60 New:  
+          `bl2` and `fip` images:  
           - `ubi-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img`  
           - `ubi-yuzhii-fip-${{inputs.model}}.bin`  
           - `nonmbm-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img`  
