@@ -49,8 +49,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo -yq apt-get update
-        sudo -yq apt-get install gcc-aarch64-linux-gnu build-essential device-tree-compiler nodejs
+        sudo apt-get -yq update
+        sudo apt-get -yq install gcc-aarch64-linux-gnu build-essential device-tree-compiler nodejs
 
         mkdir outputs
 
