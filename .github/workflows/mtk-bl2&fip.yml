@@ -33,7 +33,7 @@ jobs:
           echo "suffix=_256m" | tee -a $GITHUB_ENV
           echo "release_note=(for 256MB flash)" | tee -a $GITHUB_ENV
           echo "vertag_256m= 256MB Flash" | tee -a $GITHUB_ENV
-          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/mt7986_ruijie_rg-${{inputs.model}}*_defconfig
+          sed -i '/_NAND_TYPE_2K_/s/64/128/' atf-mtk/configs-*/*-${{inputs.model}}*_defconfig
         else
           echo "Invalid flash size. Please enter either 128 or 256."
           exit 1
@@ -60,32 +60,32 @@ jobs:
         git clone --depth 1 https://github.com/Yuzhii0718/bl-mt798x-dhcpd.git fip
 
         cd fip
-        cp ../uboot-mtk/configs-ubi/mt7986_ruijie_rg-${{inputs.model}}-ubi_defconfig ${{ env.uboot_ver }}/configs-ubi/
-        cp ../atf-mtk/configs-ubi/mt7986_ruijie_rg-${{inputs.model}}-ubi_defconfig ${{ env.atf_ver }}/configs-ubi/
+        cp ../uboot-mtk/configs-ubi/*-${{inputs.model}}-ubi_defconfig ${{ env.uboot_ver }}/configs-ubi/
+        cp ../atf-mtk/configs-ubi/*-${{inputs.model}}-ubi_defconfig ${{ env.atf_ver }}/configs-ubi/
 
         if [ ! -z "$vertag_256m" ]; then
           export BUILD_STRING="$vertag_256m"
         fi
         make BOARD=ruijie_rg-${{inputs.model}}-ubi VERSION=SP2 VARIANT=UBI MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-${{inputs.model}}*ubi*.bin ../outputs/ubi-yuzhii-fip-${{inputs.model}}.bin
-        cp output/bl2-mt7986_ruijie_rg-${{inputs.model}}*ubi*.img ../outputs/ubi-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
+        cp output/fip-*-${{inputs.model}}*ubi*.bin ../outputs/ubi-yuzhii-fip-${{inputs.model}}.bin
+        cp output/bl2-*-${{inputs.model}}*ubi*.img ../outputs/ubi-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
 
     - name: Build bl2 & fip - NONMBM
       run: |
         echo "Building bl2 & fip for NONMBM variant..."
         cd fip
         make clean && rm -rf output/*
-        cp ../uboot-mtk/configs-nonmbm/mt7986_ruijie_rg-${{inputs.model}}-max_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
-        cp ../atf-mtk/configs-nonmbm/mt7986_ruijie_rg-${{inputs.model}}-max_defconfig ${{ env.atf_ver }}/configs-nonmbm/
+        cp ../uboot-mtk/configs-nonmbm/*-${{inputs.model}}-max_defconfig ${{ env.uboot_ver }}/configs-nonmbm/
+        cp ../atf-mtk/configs-nonmbm/*-${{inputs.model}}-max_defconfig ${{ env.atf_ver }}/configs-nonmbm/
 
         if [ ! -z "$vertag_256m" ]; then
           export BUILD_STRING="$vertag_256m"
         fi
         make BOARD=ruijie_rg-${{inputs.model}}-max VERSION=SP2 VARIANT=NONMBM MULTI_LAYOUT=0 FIXED_MTDPARTS=0 UBIMNG=1
 
-        cp output/fip-mt7986_ruijie_rg-${{inputs.model}}*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-${{inputs.model}}.bin
-        cp output/bl2-mt7986_ruijie_rg-${{inputs.model}}*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
+        cp output/fip-*-${{inputs.model}}*nonmbm*.bin ../outputs/nonmbm-yuzhii-fip-${{inputs.model}}.bin
+        cp output/bl2-*-${{inputs.model}}*nonmbm*.img ../outputs/nonmbm-yuzhii-bl2-${{inputs.model}}${{ env.suffix }}.img
 
     - name: Create release artifacts
       run: |
